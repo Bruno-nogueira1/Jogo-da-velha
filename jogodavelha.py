@@ -1,194 +1,193 @@
 import random
 import copy
-from tkinter import N
 
 main = True
-vitoria = False
-dif = sentido = coluna = 0
+victory = False
+dif = sense = column = 0
 
-tabuleiro = [['-' for c in range(3)]for x in range(3)]
-
-
-#Muda a cor do texto de vitória
-def vitoria_verde(texto):
-    print('\033[1;32m'+texto+'\033[m')
+board = [['-' for c in range(3)]for x in range(3)]
 
 
-#Mostra o tabuleiro atual
-def mostrar_tabuleiro(tabuleiro, linhas):
+#Change victory color to green
+def victory_green(text):
+    print('\033[1;32m'+text+'\033[m')
+
+
+#Show the current board
+def show_board(board, lines):
     v = 0
-    for c in tabuleiro:
-        print(' -------------'+'-'*linhas)
+    for c in board:
+        print(' -------------'+'-'*lines)
         for x in c:
             if v == 0:
                 print(' | '+ str(x), end=' | ')
                 v += 1
             else:
                 print(x, end=' | ')
-        print('\n -------------'+'-'*linhas)
+        print('\n -------------'+'-'*lines)
         v = 0
 
 
-#Define a posição que o jogador irá escolher
-def jogador():
-    linha = 0
-    coluna = 0
-    escolha = True
-    while escolha:
-        while not 0 < linha < 4:
-            linha = int(input('''Insira a linha: 
+#Sets the position of the player's move
+def player():
+    line = 0
+    column = 0
+    choice = True
+    while choice:
+        while not 0 < line < 4:
+            line = int(input('''Insira a linha: 
 [1]
 [2]
 [3]
 '''))
-            if not 0 < linha < 4:
+            if not 0 < line < 4:
                 print('\033[1;31mInsira uma linha existente\033[m')
-        while not 0 < coluna < 4:
-            coluna = int(input('''Insira a coluna: 
+        while not 0 < column < 4:
+            column = int(input('''Insira a coluna: 
 [1]     [2]     [3]
 '''))
-            if not 0 < coluna < 4:
+            if not 0 < column < 4:
                 print('\033[1;31mInsira uma coluna existente\033[m')
-        if tabuleiro[linha-1][coluna-1] == '-':
-            tabuleiro[linha-1][coluna-1] = 'O'
-            escolha = False
+        if board[line-1][column-1] == '-':
+            board[line-1][column-1] = 'O'
+            choice = False
         else:
             print('\033[1;31mPosição ocupada\033[m')
-            linha = 0
-            coluna = 0
+            line = 0
+            column = 0
 
 
-#Define a forma que o Computador irá jogar de acordo com a dificuldade
-def dificuldade(x,sentido,coluna):
-    #Irá escolher as posições aleatoriamente
+#Sets the way the computer will play according to the difficulty
+def difficulty(x, sense, column):
+    #Sets the position randomly
     if x == 1:
         ok = True
         while ok:
             n = random.randint(0,2)
             n1 = random.randint(0,2)
-            if tabuleiro[n][n1] == '-':
-                tabuleiro[n][n1] = 'X'
+            if board[n][n1] == '-':
+                board[n][n1] = 'X'
                 ok = False
-    #Irá preencher o tabuleiro em uma coluna horizontal ou vertical, e caso não seja possível irá preencher aleatoriamente
+    #It will fill the board in a horizontal or vertical column, and if not possible, it will fill randomly
     if x == 2:
         ok = False
         #Horizontal
-        if sentido == 1:
+        if sense == 1:
             for c in range(0,2):
-                if tabuleiro[coluna][c] == '-':
+                if board[column][c] == '-':
                     ok = True
             if ok:        
                 while ok:
                     n = random.randint(0,2)
-                    if tabuleiro[coluna][n] == '-':
-                        tabuleiro[coluna][n] = 'X'
+                    if board[column][n] == '-':
+                        board[column][n] = 'X'
                         ok = False
             else:
                 while not ok:
                     n = random.randint(0,2)
                     n1 = random.randint(0,2)
-                    if tabuleiro[n][n1] == '-':
-                        tabuleiro[n][n1] = 'X'
+                    if board[n][n1] == '-':
+                        board[n][n1] = 'X'
                         ok = True
         #Vertical
-        if sentido == 2:
+        if sense == 2:
             for c in range(0,2):
-                if tabuleiro[c][coluna] == '-':
+                if board[c][column] == '-':
                     ok = True
             if ok:
                 while ok:
                     n = random.randint(0,2)
-                    if tabuleiro[n][coluna] == '-':
-                        tabuleiro[n][coluna] = 'X'
+                    if board[n][column] == '-':
+                        board[n][column] = 'X'
                         ok = False
             else:
                 while not ok:
                     n = random.randint(0,2)
                     n1 = random.randint(0,2)
-                    if tabuleiro[n][n1] == '-':
-                        tabuleiro[n][n1] = 'X'
+                    if board[n][n1] == '-':
+                        board[n][n1] = 'X'
                         ok = True
-    #Irá preencher ao redor das marcações do adversário
+    #Will fill around opponent's markings
     if x == 3:
         ok = True
         v = 0
-        tabuleiro_dif_3 = copy.deepcopy(tabuleiro)
-        for c in tabuleiro_dif_3:
+        board_dif_3 = copy.deepcopy(board)
+        for c in board_dif_3:
             for x in c:
                 if x == 'O':
-                    coluna = c.index(x)
-                    linha = tabuleiro_dif_3.index(c)
-                    tabuleiro_dif_3[linha][coluna] = '/'
+                    column = c.index(x)
+                    line = board_dif_3.index(c)
+                    board_dif_3[line][column] = '/'
         while ok:
-            if linha == 0:
+            if line == 0:
                 n = random.choice([0,1])
-            if linha == 1:
+            if line == 1:
                 n = random.choice([-1,0,1])
-            if linha == 2:
+            if line == 2:
                 n = random.choice([0,-1])
-            if coluna == 0:
+            if column == 0:
                 if n == 0:
                     n1 = 1
                 else:
                     n1 = random.choice([0,1])
-            if coluna == 1:
+            if column == 1:
                 if n == 0:
                     n1 = random.choice([-1,1])
                 else:
                     n1 = random.choice([-1,0,1])
-            if coluna == 2:
+            if column == 2:
                 if n == 0:
                     n1 = -1
                 else:
                     n1 = random.choice([0,-1])
-            if tabuleiro[linha+n][coluna+n1] == '-':
-                tabuleiro[linha+n][coluna+n1] = 'X'
+            if board[line+n][column+n1] == '-':
+                board[line+n][column+n1] = 'X'
                 ok = False
             v += 1
             if v == 4:
                 while ok:
                     n = random.randint(0,2)
                     n1 = random.randint(0,2)
-                    if tabuleiro[n][n1] == '-':
-                        tabuleiro[n][n1] = 'X'
+                    if board[n][n1] == '-':
+                        board[n][n1] = 'X'
                         ok = False
 
 
 #Verifica se houve um vencedor
-def verifica_vitoria():
-    global vitoria
+def check_victory():
+    global victory
     for c in range(0,3):
         #Horizontal
-        if tabuleiro[c][0] == tabuleiro[c][1] == tabuleiro[c][2] == 'O':
-            vitoria_verde('Vitória do Jogador')
-            vitoria = True
-        if tabuleiro[c][0] == tabuleiro[c][1] == tabuleiro[c][2] == 'X':
-            vitoria_verde('Vitória do Computador')
-            vitoria = True
+        if board[c][0] == board[c][1] == board[c][2] == 'O':
+            victory_green('Vitória do Jogador')
+            victory = True
+        if board[c][0] == board[c][1] == board[c][2] == 'X':
+            victory_green('Vitória do Computador')
+            victory = True
         #Vertical
-        if tabuleiro[0][c] == tabuleiro[1][c] == tabuleiro[2][c] == 'O':
-            vitoria_verde('Vitória do Jogador')
-            vitoria = True
-        if tabuleiro[0][c] == tabuleiro[1][c] == tabuleiro[2][c] == 'X':
-            vitoria_verde('Vitória do Computador')
-            vitoria = True
+        if board[0][c] == board[1][c] == board[2][c] == 'O':
+            victory_green('Vitória do Jogador')
+            victory = True
+        if board[0][c] == board[1][c] == board[2][c] == 'X':
+            victory_green('Vitória do Computador')
+            victory = True
     #Diagonais
-    if tabuleiro[0][0] == tabuleiro[1][1] == tabuleiro[2][2] =='O':
-        vitoria_verde('Vitória do Jogador')
-        vitoria = True
-    if tabuleiro[0][0] == tabuleiro[1][1] == tabuleiro[2][2] =='X':
-        vitoria_verde('Vitória do Computador')
-        vitoria = True
-    if tabuleiro[0][2] == tabuleiro[1][1] == tabuleiro[2][0] == 'O':
-        vitoria_verde('Vitória do Jogador')
-        vitoria = True
-    if tabuleiro[0][2] == tabuleiro[1][1] == tabuleiro[2][0] == 'X':
-        vitoria_verde('Vitória do Computador')
-        vitoria = True
+    if board[0][0] == board[1][1] == board[2][2] =='O':
+        victory_green('Vitória do Jogador')
+        victory = True
+    if board[0][0] == board[1][1] == board[2][2] =='X':
+        victory_green('Vitória do Computador')
+        victory = True
+    if board[0][2] == board[1][1] == board[2][0] == 'O':
+        victory_green('Vitória do Jogador')
+        victory = True
+    if board[0][2] == board[1][1] == board[2][0] == 'X':
+        victory_green('Vitória do Computador')
+        victory = True
 
 
-#O jogador escolhe a dificuldade do jogo
-def escolher_dificuldade():
+#Player sets the difficulty
+def choose_difficulty():
     global dif
     while not 0 < dif < 4 :
         dif = int(input('''Escolha uma dificuldade 
@@ -197,24 +196,26 @@ def escolher_dificuldade():
 \033[31m[3] Difícil\033[m
 '''))
     if dif == 2:
-        global sentido
-        global coluna
-        sentido = random.choice([1,2])
-        coluna = random.randint(0,2)
+        global sense
+        global column
+        sense = random.choice([1,2])
+        column = random.randint(0,2)
 
-#Verifica se houve empate
-def empate():
-    global vitoria
+
+#Check if there is a tie
+def tie():
+    global victory
     n = 0
-    for c in tabuleiro:
+    for c in board:
         for x in c:
             if x == '-':
                 n += 1
     if n == 0:
         print('\033[1;30mO jogo terminou em Empate\033[m')
-        vitoria = True
+        victory = True
 
-#Irá mostrar o menu ao jogador
+
+#Shows the menu to player
 def menu_def():
     global menu
     print('-'*14)
@@ -234,42 +235,44 @@ def menu_def():
 --------------
 '''))
 
+
 #Programa principal
 while main:
     menu_def()
     if menu == 1:
         while menu == 1:
-            escolher_dificuldade()
-            while not vitoria:
-                jogador()
-                mostrar_tabuleiro(tabuleiro,0)
-                verifica_vitoria()
+            choose_difficulty()
+            while not victory:
+                player()
+                show_board(board,0)
+                check_victory()
                 print('===============')
-                if not vitoria:
-                    empate()
-                    if not vitoria:
-                        dificuldade(dif,sentido,coluna)
-                        mostrar_tabuleiro(tabuleiro,0)
-                        verifica_vitoria()
+                if not victory:
+                    tie()
+                    if not victory:
+                        difficulty(dif,sense,column)
+                        show_board(board,0)
+                        check_victory()
                         print('''\033[33m--------------
 Próxima rodada
 --------------\033[m''')
-            if vitoria:
+            if victory:
                 rep = input(('Deseja continuar jogando? [S/N] '))
                 while not rep in 'SsNn':
                     rep = input(('Deseja continuar jogando? [S/N]'))
                 if rep in 'sS':
                     dif = 0
                     menu = 0
-                    vitoria = False
-                    tabuleiro = [['-' for c in range(3)]for x in range(3)]
-                else:
+                    victory = False
+                    board = [['-' for c in range(3)]for x in range(3)]
+                if rep in 'nN':
+                    main = False
                     break
     if menu == 2:      
-        tabuleiro_instrucao = [['1,1','1,2','1,3'],['2,1','2,2','2,3'],['3,1','3,2','3,3']]
+        instruction_board = [['1,1','1,2','1,3'],['2,1','2,2','2,3'],['3,1','3,2','3,3']]
         print('''\033[1;35mO jogador utilizará o X enquanto o Computador o O
 Irá sair vitorioso o primeiro a ter concluído o tabuleiro de forma horizontal, vertical ou diagonal
 O tabuleiro irá seguir o seguinte padrão \033[m''')
-        mostrar_tabuleiro(tabuleiro_instrucao,6)
+        show_board(instruction_board,6)
     if menu == 3:
         break
